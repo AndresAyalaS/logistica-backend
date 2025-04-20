@@ -14,6 +14,20 @@ export const swaggerOptions: Options = {
         description: 'Servidor local',
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
   },
-  apis: ['./src/routes/*.ts'], // Ruta a tus archivos de rutas donde defines los endpoints
+  apis: ['./src/routes/**/*.ts', './src/controllers/**/*.ts'], // Ruta a tus archivos de rutas donde defines los endpoints
 };

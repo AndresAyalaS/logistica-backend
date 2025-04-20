@@ -19,7 +19,7 @@ export class AuthService {
 
         // Crear el usuario
         const user = await UserRepository.createUser(username, email, hashedPassword);
-        const token = generateToken(user.id);
+        const token = generateToken(user.id, user.email, user.role);
         return { user, token };
     }
 
@@ -34,15 +34,11 @@ export class AuthService {
         // Verificar la contraseña
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return new Error('Contraseña incorrecta.');
+            throw new Error('Contraseña incorrecta.');
         }
 
-        // Generar un token JWT
-        const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, {
-            expiresIn: '1h',
-        });
-
-        return token;
+        const token = generateToken(user.id, user.email, user.role);
+        return { user, token };
     }
 
     static async getUserByEmail(email: string) {

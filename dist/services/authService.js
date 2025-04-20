@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const userRepository_1 = require("../repository/userRepository");
 const jwtUtils_1 = require("../utils/jwtUtils");
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const JWT_SECRET = 'tu_secreto_jwt';
 class AuthService {
@@ -30,7 +29,7 @@ class AuthService {
             const hashedPassword = yield bcrypt_1.default.hash(password, 10);
             // Crear el usuario
             const user = yield userRepository_1.UserRepository.createUser(username, email, hashedPassword);
-            const token = (0, jwtUtils_1.generateToken)(user.id);
+            const token = (0, jwtUtils_1.generateToken)(user.id, user.email, user.role);
             return { user, token };
         });
     }
@@ -44,16 +43,13 @@ class AuthService {
             // Verificar la contraseña
             const isPasswordValid = yield bcrypt_1.default.compare(password, user.password);
             if (!isPasswordValid) {
-                return new Error('Contraseña incorrecta.');
+                throw new Error('Contraseña incorrecta.');
             }
-            // Generar un token JWT
-            const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, {
-                expiresIn: '1h',
-            });
-            return token;
+            const token = (0, jwtUtils_1.generateToken)(user.id, user.email, user.role);
+            return { user, token };
         });
     }
-    getUserByEmail(email) {
+    static getUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
             return userRepository_1.UserRepository.findUserByEmail(email);
         });

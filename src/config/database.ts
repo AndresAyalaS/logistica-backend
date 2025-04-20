@@ -3,8 +3,8 @@ import { Pool } from 'pg';
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
-  database: 'envio',
-  password: '1234',
+  database: 'logistica',
+  password: 'Saralu15*',
   port: 5432, // Puerto por defecto de PostgreSQL
 });
 
