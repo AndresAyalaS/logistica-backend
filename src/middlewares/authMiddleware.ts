@@ -19,7 +19,6 @@ export const authenticateToken = (
   res: Response,
   next: NextFunction
 ): void => {
-  debugger
   try {
     const token = req.headers["authorization"]?.split(" ")[1];
     if (!token) {

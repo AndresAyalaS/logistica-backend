@@ -1,5 +1,5 @@
 import { createInitialStatusHistory } from "../repository/ShipmentStatusHistoryModel";
-import { createShipment, getPendingShipmentsRepository, getShipmentByIdRepository, getShipmentHistoryRepository, getShipmentsByUserRepository } from "../repository/ShipmentRepository";
+import { createShipment, getPendingShipmentsRepository, getShipmentByIdRepository, getShipmentHistoryRepository, getShipmentsByUserRepository, getAllShipments  } from "../repository/ShipmentRepository";
 import { generateTrackingNumber } from "../utils/tracking";
 import * as ShipmentRepository from "../repository/ShipmentRepository";
 import * as CarrierModel from "../repository/carrierModel";
@@ -79,4 +79,14 @@ export const assignRouteAndCarrier = async (
   await ShipmentStatusHistory.logShipmentStatusChange(shipmentId, 'in_transit');
 
   return updatedShipment;
+};
+
+export const getAllShipmentsService = async () => {
+  try {
+    const shipments = await getAllShipments();
+    return shipments;
+  } catch (error) {
+    console.error("Error en el servicio de envíos:", error);
+    throw new Error("No se pudieron obtener los envíos");
+  }
 };

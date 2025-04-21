@@ -74,3 +74,37 @@ export const assignRouteAndCarrier = async (
 
   return result.rows[0];
 };
+
+export const insertShipmentStatusHistory = async ({
+  shipment_id,
+  status,
+  notes,
+}: {
+  shipment_id: number;
+  status: string;
+  notes?: string;
+}) => {
+  const result = await pool.query(
+    `
+    INSERT INTO shipment_status_history (shipment_id, status, notes)
+    VALUES ($1, $2, $3)
+    RETURNING *;
+    `,
+    [shipment_id, status, notes]
+  );
+
+  return result.rows[0];
+};
+
+export const getAllShipments = async () => {
+  try {
+    const result = await pool.query("SELECT * FROM shipments");
+    if (!result.rows || result.rows.length === 0) {
+      console.log("No se encontraron envíos en la base de datos");
+    }
+    return result.rows;
+  } catch (error) {
+    console.error("Error en la consulta de envíos:", error);
+    throw new Error("Error al obtener los envíos");
+  }
+};

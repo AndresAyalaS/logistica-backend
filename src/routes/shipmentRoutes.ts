@@ -3,7 +3,9 @@ import authMiddleware, {
   authenticateToken,
 } from "../middlewares/authMiddleware";
 import {
+  assignRouteToShipmentController,
   createShipmentController,
+  getAllShipmentsController,
   getPendingShipmentsController,
   getShipmentByIdController,
   getShipmentHistoryController,
@@ -18,7 +20,6 @@ const router = Router();
  *   name: Envíos
  *   description: Endpoints para gestionar envíos
  */
-
 
 /**
  * @swagger
@@ -101,6 +102,24 @@ router.post("/", authenticateToken, createShipmentController);
  */
 router.get("/", authMiddleware, getShipmentsByUserController);
 
+
+/**
+ * @swagger
+ * /api/shipments/all:
+ *   get:
+ *     summary: Obtener todos los envíos del usuario autenticado
+ *     tags: [Envíos]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de envíos
+ *       401:
+ *         description: No autorizado
+ */
+router.get("/all", authMiddleware, getAllShipmentsController);
+
+
 /**
  * @swagger
  * /api/shipments/pending:
@@ -162,5 +181,61 @@ router.get("/:id", authMiddleware, getShipmentByIdController);
  *         description: Historial no encontrado
  */
 router.get("/:id/history", authMiddleware, getShipmentHistoryController);
+
+
+/**
+ * @swagger
+ * /api/shipments/{shipmentId}/assign:
+ *   put:
+ *     summary: Asignar una ruta y un transportista a un envío
+ *     tags: [Envíos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: shipmentId
+ *         in: path
+ *         required: true
+ *         description: ID del envío
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - routeId
+ *               - carrierId
+ *             properties:
+ *               routeId:
+ *                 type: integer
+ *                 example: 1
+ *               carrierId:
+ *                 type: integer
+ *                 example: 2
+ *     responses:
+ *       200:
+ *         description: Ruta y transportista asignados correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Ruta y transportista asignados correctamente
+ *                 shipment:
+ *                   $ref: '#/components/schemas/Shipment'
+ *       400:
+ *         description: Error en la solicitud
+ *       401:
+ *         description: No autorizado
+ */
+router.put(
+  "/shipments/:shipmentId/assign",
+  authMiddleware,
+  assignRouteToShipmentController
+);
 
 export default router;
