@@ -102,7 +102,6 @@ router.post("/", authenticateToken, createShipmentController);
  */
 router.get("/", authMiddleware, getShipmentsByUserController);
 
-
 /**
  * @swagger
  * /api/shipments/all:
@@ -118,7 +117,6 @@ router.get("/", authMiddleware, getShipmentsByUserController);
  *         description: No autorizado
  */
 router.get("/all", authMiddleware, getAllShipmentsController);
-
 
 /**
  * @swagger
@@ -182,7 +180,6 @@ router.get("/:id", authMiddleware, getShipmentByIdController);
  */
 router.get("/:id/history", authMiddleware, getShipmentHistoryController);
 
-
 /**
  * @swagger
  * /api/shipments/{shipmentId}/assign:
@@ -217,25 +214,11 @@ router.get("/:id/history", authMiddleware, getShipmentHistoryController);
  *     responses:
  *       200:
  *         description: Ruta y transportista asignados correctamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Ruta y transportista asignados correctamente
- *                 shipment:
- *                   $ref: '#/components/schemas/Shipment'
  *       400:
  *         description: Error en la solicitud
  *       401:
  *         description: No autorizado
  */
-router.put(
-  "/shipments/:shipmentId/assign",
-  authMiddleware,
-  assignRouteToShipmentController
-);
+router.put("/:shipmentId/assign", authMiddleware, assignRouteToShipmentController);
 
 export default router;
